@@ -153,8 +153,8 @@ bool RRT::IntersectPolygons(VerticeList verticesA, VerticeList verticesB, float 
 VerticeList RRT::findVertice(ArmPose obs_pose, float w, float h)
 {
     Transform t;
-    float cwz = cos(obs_pose.pos[3]);
-    float swz = sin(obs_pose.pos[3]);
+    float cwz = cos(obs_pose.pos[2]);
+    float swz = sin(obs_pose.pos[2]);
     t(0, 0) = cwz;
     t(0, 1) = -swz;
     t(0, 2) = obs_pose.pos[0];
@@ -173,7 +173,7 @@ VerticeList RRT::findVertice(ArmPose obs_pose, float w, float h)
     new_vertice.y = t(1, 2);
     obs_vertice.push_back(new_vertice);
     // third vertice
-    t.translateY(-h / 2.0);
+    t.translateY(-h);
     new_vertice.x = t(0, 2);
     new_vertice.y = t(1, 2);
     obs_vertice.push_back(new_vertice);
@@ -338,6 +338,7 @@ ConfigList RRT::generate_traj()
             final_path.push_back(*it);
         }
     }
+    releaseNodes(TreeNode);
     return final_path;
 }
 
@@ -346,20 +347,20 @@ ConfigList RRT::smoothing_path(ConfigList path)
 {
 
     int smmthiters = 30;
-    int m = path.size();
-    std::vector<float> dis_cost(m);
-
-    dis_cost[0] = 0;
-    for (int k = 1; k < dis_cost.size(); k++)
-    {
-        dis_cost[k] = angle_distance(path[k], path[k - 1]) + dis_cost[k - 1];
-    }
-    float cost_init = dis_cost[dis_cost.size() - 1];
-
     int iter = 1;
 
     while (iter <= smmthiters)
     {
+        int m = path.size();
+        std::vector<float> dis_cost(m);
+
+        dis_cost[0] = 0;
+        for (int k = 1; k < dis_cost.size(); k++)
+        {
+            dis_cost[k] = angle_distance(path[k], path[k - 1]) + dis_cost[k - 1];
+        }
+        float cost_init = dis_cost[dis_cost.size() - 1];
+
 
         srand(time(NULL) * iter);
 
@@ -450,14 +451,14 @@ ConfigList RRT::smoothing_path(ConfigList path)
 
         path = new_path_points;
 
-        m = path.size();
+        // m = path.size();
 
-        dis_cost[0] = 0;
-        for (int k = 1; k < dis_cost.size(); k++)
-        {
-            dis_cost[k] = angle_distance(path[k], path[k - 1]) + dis_cost[k - 1];
-        }
-        cost_init = dis_cost[dis_cost.size() - 1];
+        // dis_cost[0] = 0;
+        // for (int k = 1; k < dis_cost.size(); k++)
+        // {
+        //     dis_cost[k] = angle_distance(path[k], path[k - 1]) + dis_cost[k - 1];
+        // }
+        // cost_init = dis_cost[dis_cost.size() - 1];
 
         iter = iter + 1;
     }
