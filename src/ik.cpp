@@ -84,8 +84,8 @@ namespace kinematics
   {
     Transform t;
 
-    float cwz = cos(p[3]);
-    float swz = sin(p[3]);
+    float cwz = cos(p[2]);
+    float swz = sin(p[2]);
     t(0, 0) = cwz;
     t(0, 1) = -swz;
     t(0, 2) = p[0];

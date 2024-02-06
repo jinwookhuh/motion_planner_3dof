@@ -1,5 +1,6 @@
 #include <iostream>
 #include "src/rrt.hpp"
+#include "src/visualization.hpp"
 
 void test_rrt()
 {
@@ -21,9 +22,17 @@ void test_rrt()
     RRT new_rrt = RRT(start_solutions[0], goal_solutions[0]);
 
     // first obstacle
-    new_rrt.addObstacle(ArmPose({2.5, 1.7, 0}), 0.4, 0.3);
+    // new_rrt.addObstacle(ArmPose({2.5, 1.7, 0}), 0.4, 0.3);
+    ArmPose obstacle1({2.1, 1.6, 0}); //ArmPose({2.0, 1.7, 0})  //{2.1, 1.6, 0}
+    float obs1_w = 0.4;
+    float obs1_h = 0.3;
+    new_rrt.addObstacle(obstacle1, obs1_w, obs1_h);
     // second obstacle
-    new_rrt.addObstacle(ArmPose({2.8, 0.7, 0}), 0.4, 0.3);
+    // new_rrt.addObstacle(ArmPose({2.8, 0.7, 0}), 0.4, 0.3);
+    ArmPose obstacle2({2.1, 0.8, 0}); //ArmPose({2.8, 0.7, 0})  //{2.1, 0.8, 0}
+    float obs2_w = 0.4;
+    float obs2_h = 0.3;
+    new_rrt.addObstacle(obstacle2, obs2_w, obs2_h);
     //  if you want, you can add more obstacles.
 
     // set the dimension of the taget object. width and height.
@@ -56,6 +65,13 @@ void test_rrt()
         {
             std::cout << angles.arr[0] << " " << angles.arr[1] << " " << angles.arr[2] << "\n";
         }
+        // visualizer in workspace
+        Visualization new_visualizer = Visualization();
+        // List of obstalce
+        std::vector<VerticeList> list_vertices;
+        list_vertices.emplace_back(new_rrt.findVertice(obstacle1, obs1_w, obs1_h));
+        list_vertices.emplace_back(new_rrt.findVertice(obstacle2, obs2_w, obs2_h));
+        new_visualizer.showWorkspace(new_rrt, list_vertices, smooth_path);
     }
 }
 
